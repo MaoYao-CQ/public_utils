@@ -4,6 +4,7 @@ import (
 	beego "github.com/beego/beego/v2/server/web"
 	"net"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -12,55 +13,98 @@ type PublicApiController struct {
 }
 
 func (c *PublicApiController) GetIP() {
+	var is_debug = c.GetString("debug")
+
 	r := c.Ctx.Request
-	var ip = ClientPublicIP(r)
+	debug := false
+	if "true" == is_debug {
+		debug = true
+	}
+	var ip = ClientPublicIP(r, debug)
 	if "" == ip {
-		ip = ClientIP(r)
+		ip = ClientIP(r, debug)
 	}
 
 	c.Ctx.WriteString(ip)
 }
 
-func ClientIP(r *http.Request) string {
+func ClientIP(r *http.Request, debug bool) string {
+
+	var ips string
+
 	ip := strings.TrimSpace(strings.Split(r.Header.Get("X-Forwarded-For"), ",")[0])
 	if ip != "" {
-		return ip
+		if debug {
+			ips += "4#" + ip + ";"
+		} else {
+			return ip
+		}
 	}
 
 	ip = strings.TrimSpace(r.Header.Get("X-Real-Ip"))
 	if ip != "" {
-		return ip
+		if debug {
+			ips += "5#" + ip + ";"
+		} else {
+			return ip
+		}
 	}
 
 	if ip, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr)); err == nil {
-		return ip
+		if debug {
+			ips += "6#" + ip + ";"
+		} else {
+			return ip
+		}
 	}
 
-	return ""
+	if debug {
+		return ips
+	} else {
+		return ""
+	}
 }
 
-func ClientPublicIP(r *http.Request) string {
+func ClientPublicIP(r *http.Request, debug bool) string {
 	var ip string
+	var index int
+	var ips string
 
-	for _, ip = range strings.Split(r.Header.Get("X-Forwarded-For"), ",") {
+	for index, ip = range strings.Split(r.Header.Get("X-Forwarded-For"), ",") {
 		ip = strings.TrimSpace(ip)
 		if ip != "" && !HasLocalIPAddr(ip) {
-			return ip
+			if debug {
+				ips += "1#" + strconv.Itoa(index) + "-" + ip + ";"
+			} else {
+				return ip
+			}
 		}
 	}
 
 	ip = strings.TrimSpace(r.Header.Get("X-Real-Ip"))
 	if ip != "" && !HasLocalIPAddr(ip) {
-		return ip
-	}
-
-	if ip, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr)); err == nil {
-		if !HasLocalIPAddr(ip) {
+		if debug {
+			ips += "2#" + ip + ";"
+		} else {
 			return ip
 		}
 	}
 
-	return ""
+	if ip, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr)); err == nil {
+		if !HasLocalIPAddr(ip) {
+			if debug {
+				ips += "3#" + ip + ";"
+			} else {
+				return ip
+			}
+		}
+	}
+
+	if debug {
+		return ips
+	} else {
+		return ""
+	}
 }
 
 // HasLocalIPAddr 检测 IP 地址字符串是否是内网地址
