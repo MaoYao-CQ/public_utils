@@ -8,4 +8,5 @@ import (
 func init() {
     //beego.Router("/", &controllers.MainController{})
 	beego.Router("/get-ip", &controllers.PublicApiController{}, "*:GetIP")
+	beego.Router("/get-time", &controllers.PublicApiController{}, "*:GetTime")
 }

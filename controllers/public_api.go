@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type PublicApiController struct {
@@ -13,11 +14,11 @@ type PublicApiController struct {
 }
 
 func (c *PublicApiController) GetIP() {
-	var is_debug = c.GetString("debug")
+	var isDebug = c.GetString("debug")
 
 	r := c.Ctx.Request
 	debug := false
-	if "true" == is_debug {
+	if "true" == isDebug {
 		debug = true
 	}
 	var ip = ClientPublicIP(r, debug)
@@ -26,6 +27,10 @@ func (c *PublicApiController) GetIP() {
 	}
 
 	c.Ctx.WriteString(ip)
+}
+
+func (c *PublicApiController) GetTime() {
+	c.Ctx.WriteString(strconv.FormatInt(time.Now().Unix(), 10))
 }
 
 func ClientIP(r *http.Request, debug bool) string {
