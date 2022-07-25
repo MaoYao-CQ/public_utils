@@ -1,45 +1,18 @@
-package controllers
-
+package utilHttp
 import (
-	beego "github.com/beego/beego/v2/server/web"
 	"net"
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 )
 
-type PublicApiController struct {
-	beego.Controller
-}
-
-func (c *PublicApiController) GetIP() {
-	var isDebug = c.GetString("debug")
-
-	r := c.Ctx.Request
-	debug := false
-	if "true" == isDebug {
-		debug = true
-	}
-	var ip = ClientPublicIP(r, debug)
-	if "" == ip {
-		ip = ClientIP(r, debug)
-	}
-
-	c.Ctx.WriteString(ip)
-}
-
-func (c *PublicApiController) GetTime() {
-	c.Ctx.WriteString(strconv.FormatInt(time.Now().Unix(), 10))
-}
-
-func ClientIP(r *http.Request, debug bool) string {
+func ClientIP(r *http.Request, debug ...bool) string {
 
 	var ips string
 
 	ip := strings.TrimSpace(strings.Split(r.Header.Get("X-Forwarded-For"), ",")[0])
 	if ip != "" {
-		if debug {
+		if len(debug) > 0 && debug[0] {
 			ips += "4#" + ip + ";"
 		} else {
 			return ip
@@ -48,7 +21,7 @@ func ClientIP(r *http.Request, debug bool) string {
 
 	ip = strings.TrimSpace(r.Header.Get("X-Real-Ip"))
 	if ip != "" {
-		if debug {
+		if len(debug) > 0 && debug[0] {
 			ips += "5#" + ip + ";"
 		} else {
 			return ip
@@ -56,21 +29,21 @@ func ClientIP(r *http.Request, debug bool) string {
 	}
 
 	if ip, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr)); err == nil {
-		if debug {
+		if len(debug) > 0 && debug[0] {
 			ips += "6#" + ip + ";"
 		} else {
 			return ip
 		}
 	}
 
-	if debug {
+	if len(debug) > 0 && debug[0] {
 		return ips
 	} else {
 		return ""
 	}
 }
 
-func ClientPublicIP(r *http.Request, debug bool) string {
+func ClientPublicIP(r *http.Request, debug ...bool) string {
 	var ip string
 	var index int
 	var ips string
@@ -78,7 +51,7 @@ func ClientPublicIP(r *http.Request, debug bool) string {
 	for index, ip = range strings.Split(r.Header.Get("X-Forwarded-For"), ",") {
 		ip = strings.TrimSpace(ip)
 		if ip != "" && !HasLocalIPAddr(ip) {
-			if debug {
+			if len(debug) > 0 && debug[0] {
 				ips += "1#" + strconv.Itoa(index) + "-" + ip + ";"
 			} else {
 				return ip
@@ -88,7 +61,7 @@ func ClientPublicIP(r *http.Request, debug bool) string {
 
 	ip = strings.TrimSpace(r.Header.Get("X-Real-Ip"))
 	if ip != "" && !HasLocalIPAddr(ip) {
-		if debug {
+		if len(debug) > 0 && debug[0] {
 			ips += "2#" + ip + ";"
 		} else {
 			return ip
@@ -97,7 +70,7 @@ func ClientPublicIP(r *http.Request, debug bool) string {
 
 	if ip, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr)); err == nil {
 		if !HasLocalIPAddr(ip) {
-			if debug {
+			if len(debug) > 0 && debug[0] {
 				ips += "3#" + ip + ";"
 			} else {
 				return ip
@@ -105,7 +78,7 @@ func ClientPublicIP(r *http.Request, debug bool) string {
 		}
 	}
 
-	if debug {
+	if len(debug) > 0 && debug[0] {
 		return ips
 	} else {
 		return ""
