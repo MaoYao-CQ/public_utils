@@ -2,6 +2,7 @@ package controllers
 
 import (
 	beego "github.com/beego/beego/v2/server/web"
+	godump "github.com/favframework/debug"
 	"public_utils/config"
 	"time"
 )
@@ -11,14 +12,18 @@ type HomeController struct {
 }
 
 func (c *HomeController) Get() {
-	c.Data["Website"] = "UTILS|工具喵"
 	if config.Debug {
-		c.Data["Website"] = "DEBUG-工具喵"
+		config.Website.Title = "DEBUG-工具喵"
 	}
 
-	c.Data["timestamp"] = time.Now().Unix()
-	c.Data["datetime"] = time.Now().Format("2006-01-02 15:04:05")
+	godump.Dump(config.Website)
 
-	c.Data["Email"] = "xxxxxx@163.com"
+	c.Data["website"] = config.Website
+	c.Data["timestamp"] = time.Now().Unix()
+
 	c.TplName = "index.tpl"
+}
+
+func (c *HomeController) Google() {
+	c.Ctx.WriteString("google-site-verification: google965a213a981ca817.html")
 }

@@ -2,6 +2,7 @@ package config
 
 import (
 	beego "github.com/beego/beego/v2/server/web"
+	"time"
 )
 
 var (
@@ -10,6 +11,14 @@ var (
 	ProductName     string
 	PublicApiDomain string
 	IpdbPath        string
+	Website         struct {
+		Name        string
+		PublicUrl   string
+		Title       string
+		Keywords    string
+		Description string
+		Datetime    time.Time
+	}
 )
 
 func Init() {
@@ -42,4 +51,29 @@ func Init() {
 	if nil != err {
 		Debug = false
 	}
+
+	Website.Name, err = beego.AppConfig.String("website::name")
+	if nil != err || "" == Website.Name {
+		Website.Name = ""
+	}
+
+	Website.PublicUrl, err = beego.AppConfig.String("website::publicUrl")
+	if nil != err || "" == Website.PublicUrl {
+		Website.PublicUrl = ""
+	}
+
+	Website.Title, err = beego.AppConfig.String("Website::Title")
+	if nil != err || "" == Website.Title {
+		Website.Title = ""
+	}
+	Website.Keywords, err = beego.AppConfig.String("Website::Keywords")
+	if nil != err || "" == Website.Keywords {
+		Website.Keywords = ""
+	}
+	Website.Description, err = beego.AppConfig.String("Website::Description")
+	if nil != err || "" == Website.Description {
+		Website.Description = ""
+	}
+	Website.Datetime = time.Now()
+
 }

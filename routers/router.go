@@ -6,7 +6,8 @@ import (
 )
 
 func init() {
-	beego.Router("/", &controllers.HomeController{})
+	beego.Router("/", &controllers.HomeController{}, "*:Get")
+	beego.Router("/google965a213a981ca817.html", &controllers.HomeController{}, "*:Google")
 
 	initRouter()
 
