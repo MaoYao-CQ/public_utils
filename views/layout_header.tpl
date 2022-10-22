@@ -31,21 +31,6 @@
             min-width: 100% !important;
         }
     }
-
-    .self-cord {
-        height: 395px;
-        min-width: 490px;
-        overflow-y: scroll;
-    }
-
-    .self-cord .string-box-p {
-        margin-top: 15px;
-    }
-
-    .container .row {
-        height: 48px;
-    }
-
 </style>
 <body class="h-100 body">
 

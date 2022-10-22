@@ -1,4 +1,19 @@
 {{template "layout_header.tpl" .}}
+<style>
+    .self-cord {
+        height: 395px;
+        min-width: 490px;
+        overflow-y: scroll;
+    }
+
+    .self-cord .string-box-p {
+        margin-top: 15px;
+    }
+
+    .container .row {
+        height: 48px;
+    }
+</style>
 <div class="container w-100 h-100 d-block mt-3 main-content">
     <div class="d-block">
         <div class="self-cord w-50 d-inline-block p-1 float-left overflow-auto">
