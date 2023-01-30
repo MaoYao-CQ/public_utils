@@ -28,4 +28,5 @@ func (c *HomeController) Google() {
 	c.Ctx.WriteString("google-site-verification: google965a213a981ca817.html")
 
 
+
 }
