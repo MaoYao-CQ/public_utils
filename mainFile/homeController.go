@@ -32,4 +32,5 @@ func (c *HomeController) Google() {
 //004
 //005
 //006
+//007
 }
