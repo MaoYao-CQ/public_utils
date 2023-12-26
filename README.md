@@ -10,6 +10,7 @@
 ## 编译命令
 ### # 本地调试
     bee run
+
 ### # windows平台部署
     bee pack -be GOOS=windows -be CGO_ENABLED=0 -exp="vue:.idea:.git" -exs=".go:.DS_Store:.tmp:go.mod:go.sum:.exe:.exe~"
 
