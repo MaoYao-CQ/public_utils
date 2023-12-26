@@ -10,6 +10,8 @@ func init() {
 	beego.Router("/google965a213a981ca817.html", &controllers.HomeController{}, "*:Google")
 
 	initRouter()
+	beego.Router("/get-ip", &controllers.PublicApiController{}, "*:GetIpString")
+	beego.Router("/get-time", &controllers.PublicApiController{}, "*:GetTime")
 
 	//beego.InsertFilter("/api/*", beego.BeforeExec, filterCheckToken)
 
@@ -18,8 +20,6 @@ func init() {
 func initRouter() {
 
 	nsPubApi := beego.NewNamespace("/api/v1",
-		beego.NSRouter("/get-ip", &controllers.PublicApiController{}, "*:GetIpString"),
-		beego.NSRouter("/get-time", &controllers.PublicApiController{}, "*:GetTime"),
 		beego.NSNamespace("ip",
 			//beego.NSInclude(&public_api.FaceEnController{}),
 			beego.NSRouter("/get-string", &controllers.PublicApiController{}, "*:GetIpString"),
