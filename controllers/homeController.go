@@ -2,7 +2,6 @@ package controllers
 
 import (
 	beego "github.com/beego/beego/v2/server/web"
-	godump "github.com/favframework/debug"
 	"public_utils/config"
 	"time"
 )
@@ -16,7 +15,7 @@ func (c *HomeController) Get() {
 		config.Website.Title = "DEBUG-工具喵"
 	}
 
-	godump.Dump(config.Website)
+	//godump.Dump(config.Website)
 
 	c.Data["website"] = config.Website
 	c.Data["timestamp"] = time.Now().Unix()
